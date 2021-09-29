@@ -75,10 +75,20 @@ RUN cd ~/opencv2/opencv-2.4.13.5/release && make install
 
 # build libfbi
 RUN cd ~/workspace/3rdparty && git clone https://github.com/mkirchner/libfbi.git
+RUN apt-get install -y libboost-all-dev
 RUN cd ~/workspace/3rdparty/libfbi && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make
 
 # build rapter
 RUN cd ~/workspace && git clone https://github.com/amonszpart/RAPter.git
 
 RUN apt-get install -y nano
-RUN cd ~/workspace/RAPter/RAPter && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+RUN apt-get install -y libgdal26
+RUN apt-get install -y libodbc1
+RUN apt-get install -y libopencv-dev
+RUN apt-get install -y libpcl-dev
+RUN apt-get install -y cmake
+RUN cd ~/workspace/RAPter/RAPter && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. 
+RUN printf '%s\n%s\n' "set(CMAKE_CXX_STANDARD_REQUIRED ON)" "$(cat /root/workspace/RAPter/RAPter/CMakeLists.txt)" >/root/workspace/RAPter/RAPter/CMakeLists.txt && printf '%s\n%s\n' "set(CMAKE_CXX_STANDARD 14)" "$(cat /root/workspace/RAPter/RAPter/CMakeLists.txt)" >/root/workspace/RAPter/RAPter/CMakeLists.txt
+RUN apt-get install -y libmumps-dev
+RUN cd ~/workspace/3rdparty/CoinBonmin-stable/build/lib && wget https://forge.scilab.org/index.php/p/sci-ipopt/source/tree/87d40abff2e10dfa799dab2962e52179a2596cc1/thirdparty/Linux/lib/x64/libcoinmumps.so.1.4.7 && mv libcoinmumps.so.1.4.7 libcoinmumps.so
+RUN cd ~/workspace/RAPter/RAPter/build && make
